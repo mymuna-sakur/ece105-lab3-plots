@@ -8,6 +8,8 @@ Usage
 -----
     python generate_plots.py
 """
+from ast import main
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -108,3 +110,52 @@ def plot_histogram(ax, sensor_a, sensor_b, *, bins=30, alpha=0.5, label_a='Senso
     ax.axvline(sensor_a.mean(), color='blue', linestyle='dashed', linewidth=1.5, label='Mean A')
     ax.axvline(sensor_b.mean(), color='orange', linestyle='dashed', linewidth=1.5, label='Mean B')
     ax.legend()
+
+    # Create plot_boxplot(sensor_a, sensor_b, ax) that draws
+    # the side-by-side box plot from the notebook onto the given Axes object.
+    # NumPy-style docstring. Modifies ax in place, returns None. 
+    
+    def plot_boxplot(ax, sensor_a, sensor_b):
+        """Draw a side-by-side box plot of two sensors on an existing Axes.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+            An existing Matplotlib Axes object to modify in place.
+        sensor_a : numpy.ndarray
+            1-D array of temperature readings for sensor A, shape (N,).
+        sensor_b : numpy.ndarray
+            1-D array of temperature readings for sensor B, shape (N,).
+
+        Returns
+        -------
+        None
+        The function modifies ax in place and returns None.
+        """
+        ax.boxplot([sensor_a, sensor_b], tick_labels=['Sensor A', 'Sensor B'])
+        overall_mean = np.mean(np.concatenate([sensor_a, sensor_b]))
+        ax.axhline(overall_mean, color='red', linestyle='dashed', linewidth=1.5, label='Overall Mean')
+        ax.set_xlabel('Sensor')
+        ax.set_ylabel('Temperature (deg C)')
+        ax.set_title('Sensor A vs Sensor B Temperature Distribution')
+        ax.legend()
+
+    def main():
+        """Generate sensor data and save all three plots as a single PNG.
+
+        Returns
+        -------
+        None
+        """
+        sensor_a, sensor_b, timestamps = generate_data(2223)
+        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        plot_scatter(plt.axes[0], timestamps, sensor_a, sensor_b)
+        plot_histogram(plt.axes[1], sensor_a, sensor_b)
+        plot_boxplot(plt.axes[2], sensor_a, sensor_b)
+        plt.tight_layout()
+        fig.savefig('sensor_analysis.png', dpi=150, bbox_inches='tight')
+        print('Saved sensor_analysis.png')
+
+
+    if __name__ == '__main__':
+        main()
