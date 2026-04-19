@@ -154,9 +154,9 @@ def main():
     """
     sensor_a, sensor_b, timestamps = generate_data(2223)
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    plot_scatter(plt.axes[0], timestamps, sensor_a, sensor_b)
-    plot_histogram(plt.axes[1], sensor_a, sensor_b)
-    plot_boxplot(plt.axes[2], sensor_a, sensor_b)
+    plot_scatter(axes[0], timestamps, sensor_a, sensor_b)
+    plot_histogram(axes[1], sensor_a, sensor_b)
+    plot_boxplot(axes[2], sensor_a, sensor_b)
     plt.tight_layout()
     fig.savefig('sensor_analysis.png', dpi=150, bbox_inches='tight')
     print('Saved sensor_analysis.png')
