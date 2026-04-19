@@ -146,17 +146,31 @@ def plot_boxplot(ax, sensor_a, sensor_b):
 # at 150 DPI with tight bounding box.
 
 def main():
-    """Generate sensor data and save all three plots as a single PNG.
+    """Generate sensor data and save all three plots plus summary statistics as a single PNG.
 
     Returns
     -------
     None
     """
     sensor_a, sensor_b, timestamps = generate_data(2223)
-    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
-    plot_scatter(axes[0], timestamps, sensor_a, sensor_b)
-    plot_histogram(axes[1], sensor_a, sensor_b)
-    plot_boxplot(axes[2], sensor_a, sensor_b)
+    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+    plot_scatter(axes[0, 0], timestamps, sensor_a, sensor_b)
+    plot_histogram(axes[0, 1], sensor_a, sensor_b)
+    plot_boxplot(axes[1, 0], sensor_a, sensor_b)
+
+    summary_ax = axes[1, 1]
+    summary_ax.axis('off')
+    summary_text = (
+        f"Sensor A mean: {sensor_a.mean():.2f}\n"
+        f"Sensor A std: {sensor_a.std():.2f}\n"
+        f"Sensor B mean: {sensor_b.mean():.2f}\n"
+        f"Sensor B std: {sensor_b.std():.2f}\n"
+        f"Overall mean: {np.mean(np.concatenate([sensor_a, sensor_b])):.2f}\n"
+        f"Measurement count: {sensor_a.size} per sensor"
+    )
+    summary_ax.text(0.02, 0.98, summary_text, va='top', ha='left', family='monospace', fontsize=11)
+    summary_ax.set_title('Summary Statistics')
+
     plt.tight_layout()
     fig.savefig('sensor_analysis.png', dpi=150, bbox_inches='tight')
     print('Saved sensor_analysis.png')
